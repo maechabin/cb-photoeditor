@@ -23,13 +23,9 @@ var drag_and_drop = (function() {
 
         if (f.type === "image/gif" || f.type === "image/png" || f.type === "image/jpeg") {
 
-          //var div = $("<div>").attr("class", "image");
           var div = document.createElement("div");
           div.setAttribute("class", "cb-image");
 
-          //var img = $("<img>");
-          //img.attr("src", evt.target.result);
-          //img.css({"max-width": "100%", "height": "auto"});
           var img = document.createElement("img");
           img.src = evt.target.result;
           img.style.maxWidth = "100%";
@@ -56,7 +52,6 @@ var drag_and_drop = (function() {
   function dragAndDrop() {
 
     drag.addEventListener("drop", function(e) {
-      console.log("aaa");
       e.preventDefault();
       readImage(e);
     }, false);
