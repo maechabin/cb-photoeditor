@@ -1,4 +1,4 @@
-var drag_and_drop = (function() {
+var drag_and_drop = (function () {
 
   var drag = document.getElementById("cb-drag");
   var disp = document.getElementById("cb-display");
@@ -8,7 +8,7 @@ var drag_and_drop = (function() {
 
     var f = e.dataTransfer.files;
 
-    for(var i = 0, l = f.length; i < l; i++) {
+    for (var i = 0, l = f.length; i < l; i++) {
 
       var reader = new FileReader();
 
@@ -17,23 +17,25 @@ var drag_and_drop = (function() {
       console.log(f[i].size);
       console.log(f[i].lastModifiedDate.toLocaleDateString());
 
-      reader.onload = (function(f) {
+      reader.onload = (function (f) {
 
-      return function(evt) {
+        return function (evt) {
 
-        if (f.type === "image/gif" || f.type === "image/png" || f.type === "image/jpeg") {
+          if (f.type === "image/gif" || f.type === "image/png" || f.type === "image/jpeg") {
 
-          var div = document.createElement("div");
-          div.setAttribute("class", "cb-image");
+            var div, img;
 
-          var img = document.createElement("img");
-          img.src = evt.target.result;
-          img.style.maxWidth = "100%";
-          img.style.height = "auto";
+            div = document.createElement("div");
+            div.setAttribute("class", "cb-image");
 
-          div.appendChild(img);
-          //img.after("<p>■ファイル名: " + f.name + "<br>■容量: " + f.size + "バイト</p>");
-          disp.appendChild(div);
+            img = document.createElement("img");
+            img.src = evt.target.result;
+            img.style.maxWidth = "100%";
+            img.style.height = "auto";
+
+            div.appendChild(img);
+            //img.after("<p>■ファイル名: " + f.name + "<br>■容量: " + f.size + "バイト</p>");
+            disp.appendChild(div);
 
           } else {
             return;
@@ -51,12 +53,12 @@ var drag_and_drop = (function() {
 
   function dragAndDrop() {
 
-    drag.addEventListener("drop", function(e) {
+    drag.addEventListener("drop", function (e) {
       e.preventDefault();
       readImage(e);
     }, false);
 
-    drag.addEventListener("dragover", function(e) {
+    drag.addEventListener("dragover", function (e) {
       e.preventDefault();
     }, false);
 /*
@@ -68,7 +70,7 @@ var drag_and_drop = (function() {
 
   return {
 
-    init: function() {
+    init: function () {
       dragAndDrop();
     }
 
