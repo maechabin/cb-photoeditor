@@ -6,10 +6,11 @@ var drag_and_drop = (function () {
 
   function readImage(e) {
 
-    var f = e.dataTransfer.files;
+    var f = (e.dataTransfer) ? e.dataTransfer.files : e.target.files;
 
     for (var i = 0, l = f.length; i < l; i++) {
 
+      var imageData = {};
       var reader = new FileReader();
 
       console.log(f[i].name);
@@ -23,19 +24,13 @@ var drag_and_drop = (function () {
 
           if (f.type === "image/gif" || f.type === "image/png" || f.type === "image/jpeg") {
 
-            var div, img;
-
-            div = document.createElement("div");
-            div.setAttribute("class", "cb-image");
-
-            img = document.createElement("img");
-            img.src = evt.target.result;
-            img.style.maxWidth = "100%";
-            img.style.height = "auto";
-
-            div.appendChild(img);
-            //img.after("<p>■ファイル名: " + f.name + "<br>■容量: " + f.size + "バイト</p>");
-            disp.appendChild(div);
+            imageData.type = f.type;
+            imageData.name = f.name;
+            imageData.size = f.size;
+            imageData.date = f.lastModifiedDate.toLocaleDateString();
+            imageData.url = evt.target.result;
+            makeView(imageData);
+            //return imageData;
 
           } else {
             return;
@@ -51,7 +46,25 @@ var drag_and_drop = (function () {
 
   }
 
-  function dragAndDrop() {
+  function makeView(data) {
+
+    var div, img;
+
+    div = document.createElement("div");
+    div.setAttribute("class", "cb-image");
+
+    img = document.createElement("img");
+    img.src = data.url;
+    img.style.maxWidth = "100%";
+    img.style.height = "auto";
+
+    div.appendChild(img);
+    img.insertAdjacentHTML("afterend", "<p>■ファイル名: " + data.name + "<br>■容量: " + data.size + "バイト</p>");
+    disp.appendChild(div);
+
+  }
+
+  function dragFiles() {
 
     drag.addEventListener("drop", function (e) {
       e.preventDefault();
@@ -61,17 +74,22 @@ var drag_and_drop = (function () {
     drag.addEventListener("dragover", function (e) {
       e.preventDefault();
     }, false);
-/*
+
+  }
+
+  function uploadFiles() {
+
     file.addEventListener("change", function(e) {
       readImage(e);
     }, false);
-*/
+
   }
 
   return {
 
     init: function () {
-      dragAndDrop();
+      dragFiles();
+      uploadFiles();
     }
 
   };
