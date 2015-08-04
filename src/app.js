@@ -51,10 +51,11 @@ var drag_and_drop = (function () {
     var div, img;
 
     div = document.createElement("div");
-    div.setAttribute("class", "cb-image");
+    div.setAttribute("class", "cb-div");
 
     img = document.createElement("img");
     img.src = data.url;
+    img.setAttribute("class", "cb-image");
     img.style.maxWidth = "100%";
     img.style.height = "auto";
 
@@ -97,3 +98,19 @@ var drag_and_drop = (function () {
 })();
 
 drag_and_drop.init();
+
+var featherEditor = new Aviary.Feather({
+  apiKey: "4aa4ec3a537c433abd5842b9fb971942",
+  onSave: function(imageID, newURL) {
+    var img1 = document.getElementById(imageID);
+    img1.src = newURL;
+  }
+});
+
+function launchEditor(id, src) {
+  featherEditor.launch({
+    image: id,
+    url: src
+  });
+  return false;
+}
