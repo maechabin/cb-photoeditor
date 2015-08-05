@@ -113,16 +113,21 @@ var featherEditor = new Aviary.Feather({
   }
 });
 
-var image;
+var j = 0;
+var image1 = [];
 var disp = document.getElementById("cb-display");
 
 disp.addEventListener("makeView", function () {
 
-  image = document.querySelectorAll(".cb-image");
+  var image = document.querySelectorAll(".cb-image");
+  image1.push(document.querySelectorAll(".cb-image")[j]);
+  console.log(image);
+  console.log(image1[j]);
+  j++;
 
-  for (var i = 0, l = image.length; i < l; i++) {
+  for (var i = 0, l = image1.length; i < l; i++) {
 
-    image[i].addEventListener("click", function () {
+    image1[i].addEventListener("click", function () {
       console.log(this);
     }, false);
 
