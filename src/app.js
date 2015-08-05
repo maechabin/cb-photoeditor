@@ -10,7 +10,6 @@ var drag_and_drop = (function () {
 
     for (var i = 0, l = f.length; i < l; i++) {
 
-      var imageData = {};
       var reader = new FileReader();
 
       console.log(f[i].name);
@@ -19,6 +18,8 @@ var drag_and_drop = (function () {
       console.log(f[i].lastModifiedDate.toLocaleDateString());
 
       reader.onload = (function (f) {
+
+        var imageData = {};
 
         return function (evt) {
 
@@ -48,7 +49,7 @@ var drag_and_drop = (function () {
 
   function makeView(data) {
 
-    var div, img;
+    var div, img, customEvent;
 
     div = document.createElement("div");
     div.setAttribute("class", "cb-div");
@@ -62,6 +63,10 @@ var drag_and_drop = (function () {
     div.appendChild(img);
     img.insertAdjacentHTML("afterend", "<p>■ファイル名: " + data.name + "<br>■容量: " + data.size + "バイト</p>");
     disp.appendChild(div);
+
+    customEvent = document.createEvent("HTMLEvents");
+    customEvent.initEvent("makeView", true, false);
+    div.dispatchEvent(customEvent);
 
   }
 
@@ -99,6 +104,7 @@ var drag_and_drop = (function () {
 
 drag_and_drop.init();
 
+
 var featherEditor = new Aviary.Feather({
   apiKey: "4aa4ec3a537c433abd5842b9fb971942",
   onSave: function(imageID, newURL) {
@@ -106,6 +112,24 @@ var featherEditor = new Aviary.Feather({
     img1.src = newURL;
   }
 });
+
+var image;
+var disp = document.getElementById("cb-display");
+
+disp.addEventListener("makeView", function () {
+
+  image = document.querySelectorAll(".cb-image");
+
+  for (var i = 0, l = image.length; i < l; i++) {
+
+    image[i].addEventListener("click", function () {
+      console.log(this);
+    }, false);
+
+  }
+
+}, false);
+
 
 function launchEditor(id, src) {
   featherEditor.launch({
