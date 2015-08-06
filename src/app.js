@@ -12,11 +12,6 @@ var drag_and_drop = (function () {
 
       var reader = new FileReader();
 
-      console.log(f[i].name);
-      console.log(f[i].type);
-      console.log(f[i].size);
-      console.log(f[i].lastModifiedDate.toLocaleDateString());
-
       reader.onload = (function (f) {
 
         var imageData = {};
@@ -31,7 +26,6 @@ var drag_and_drop = (function () {
             imageData.date = f.lastModifiedDate.toLocaleDateString();
             imageData.url = evt.target.result;
             makeView(imageData);
-            //return imageData;
 
           } else {
             return;
@@ -113,28 +107,26 @@ var featherEditor = new Aviary.Feather({
   }
 });
 
-var j = 0;
-var image1 = [];
 var disp = document.getElementById("cb-display");
+disp.addEventListener("makeView", aaa, false);
 
-disp.addEventListener("makeView", function () {
+function aaa() {
 
   var image = document.querySelectorAll(".cb-image");
-  image1.push(document.querySelectorAll(".cb-image")[j]);
-  console.log(image);
-  console.log(image1[j]);
-  j++;
 
-  for (var i = 0, l = image1.length; i < l; i++) {
-
-    image1[i].addEventListener("click", function () {
-      console.log(this);
-    }, false);
-
+  for (var i = 0, l = image.length; i < l; i++) {
+    image[i].setAttribute("id", "cb-image_" + i);
+    image[i].removeEventListener("click", bbb, false);
+    image[i].addEventListener("click", bbb, false);
   }
 
-}, false);
+}
 
+function bbb() {
+  var id = this.getAttribute("id");
+  var src = this.getAttribute("src");
+  launchEditor(id, src);
+}
 
 function launchEditor(id, src) {
   featherEditor.launch({
