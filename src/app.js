@@ -1,4 +1,4 @@
-var drag_and_drop = (function () {
+var dragAndDrop = (function () {
 
   var drag = document.getElementById("cb-drag");
   var disp = document.getElementById("cb-display");
@@ -86,52 +86,96 @@ var drag_and_drop = (function () {
   }
 
   return {
-
     init: function () {
       dragFiles();
       uploadFiles();
     }
-
   };
 
 })();
 
-drag_and_drop.init();
+var photoEditor = (function () {
 
-
-var featherEditor = new Aviary.Feather({
-  apiKey: "4aa4ec3a537c433abd5842b9fb971942",
-  onSave: function(imageID, newURL) {
-    var img1 = document.getElementById(imageID);
-    img1.src = newURL;
-  }
-});
-
-var disp = document.getElementById("cb-display");
-disp.addEventListener("makeView", aaa, false);
-
-function aaa() {
-
-  var image = document.querySelectorAll(".cb-image");
-
-  for (var i = 0, l = image.length; i < l; i++) {
-    image[i].setAttribute("id", "cb-image_" + i);
-    image[i].removeEventListener("click", bbb, false);
-    image[i].addEventListener("click", bbb, false);
-  }
-
-}
-
-function bbb() {
-  var id = this.getAttribute("id");
-  var src = this.getAttribute("src");
-  launchEditor(id, src);
-}
-
-function launchEditor(id, src) {
-  featherEditor.launch({
-    image: id,
-    url: src
+  var featherEditor = new Aviary.Feather({
+    apiKey: "4aa4ec3a537c433abd5842b9fb971942",
+    onSave: function(imageID, newURL) {
+      var img1 = document.getElementById(imageID);
+      img1.src = newURL;
+    }
   });
-  return false;
-}
+
+  function listener() {
+
+    var disp = document.getElementById("cb-display");
+
+    disp.addEventListener("makeView", function () {
+
+      var image = document.querySelectorAll(".cb-image");
+      var button = [];
+
+      for (var i = 0, l = image.length; i < l; i++) {
+
+        button[i] = makeButton();
+        image[i].setAttribute("id", "cb-image_" + i);
+        image[i].parentNode.style.position = "relative";
+        image[i].parentNode.appendChild(button[i]);
+
+        button[i].addEventListener("click", clearImage, false);
+        image[i].addEventListener("click", editPhoto, false);
+      }
+
+    }, false);
+
+  }
+
+  function clearImage() {
+    this.parentNode.style.display = "none";
+  }
+
+  function editPhoto() {
+    console.log(this);
+    var id = this.getAttribute("id");
+    var src = this.getAttribute("src");
+    launchEditor(id, src);
+  }
+
+  function launchEditor(id, src) {
+    featherEditor.launch({
+      image: id,
+      url: src
+    });
+    return false;
+  }
+
+  function makeButton() {
+    var button = document.createElement("button");
+    button.setAttribute("style",
+      "width: 64px;"
+      + " line-height: 24px;"
+      + " background-color: #37474F;"
+      + " color: #fff;"
+      + " border: none;"
+      + " cursor: pointer;"
+      + " border-radius: 2px;"
+      + " font-size: 14px;"
+      + " position: absolute;"
+      + " text-align: center;"
+      + " top: 8px;"
+      + " right: 8px;"
+      + " padding: 0;"
+      + " z-index: 1000;"
+    );
+    button.innerHTML = "削除";
+    return button;
+  }
+
+  return {
+    init: function () {
+      listener();
+    }
+  };
+
+} ());
+
+dragAndDrop.init();
+photoEditor.init();
