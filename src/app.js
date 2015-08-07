@@ -1,8 +1,33 @@
-var dragAndDrop = (function () {
+var dragAndDrop = (function (window, document) {
+
+  "use strict";
 
   var drag = document.getElementById("cb-drag");
   var disp = document.getElementById("cb-display");
   var file = document.getElementById("cb-file");
+
+  function makeView(data) {
+
+    var div, img, customEvent;
+
+    div = document.createElement("div");
+    div.setAttribute("class", "cb-div");
+
+    img = document.createElement("img");
+    img.src = data.url;
+    img.setAttribute("class", "cb-image");
+    img.style.maxWidth = "100%";
+    img.style.height = "auto";
+
+    div.appendChild(img);
+    img.insertAdjacentHTML("afterend", "<p>■ファイル名: <b>" + data.name + "</b><br>■容量: <b>" + data.size + "</b>バイト</p>");
+    disp.appendChild(div);
+
+    customEvent = document.createEvent("HTMLEvents");
+    customEvent.initEvent("makeView", true, false);
+    div.dispatchEvent(customEvent);
+
+  }
 
   function readImage(e) {
 
@@ -41,37 +66,16 @@ var dragAndDrop = (function () {
 
   }
 
-  function makeView(data) {
-
-    var div, img, customEvent;
-
-    div = document.createElement("div");
-    div.setAttribute("class", "cb-div");
-
-    img = document.createElement("img");
-    img.src = data.url;
-    img.setAttribute("class", "cb-image");
-    img.style.maxWidth = "100%";
-    img.style.height = "auto";
-
-    div.appendChild(img);
-    img.insertAdjacentHTML("afterend", "<p>■ファイル名: " + data.name + "<br>■容量: " + data.size + "バイト</p>");
-    disp.appendChild(div);
-
-    customEvent = document.createEvent("HTMLEvents");
-    customEvent.initEvent("makeView", true, false);
-    div.dispatchEvent(customEvent);
-
-  }
-
   function dragFiles() {
 
     drag.addEventListener("drop", function (e) {
+      e.stopPropagation();
       e.preventDefault();
       readImage(e);
     }, false);
 
     drag.addEventListener("dragover", function (e) {
+      e.stopPropagation();
       e.preventDefault();
     }, false);
 
@@ -92,9 +96,11 @@ var dragAndDrop = (function () {
     }
   };
 
-})();
+} (window, document));
 
-var photoEditor = (function () {
+var photoEditor = (function (window, document) {
+
+  "use strict";
 
   var featherEditor = new Aviary.Feather({
     apiKey: "4aa4ec3a537c433abd5842b9fb971942",
@@ -103,6 +109,47 @@ var photoEditor = (function () {
       img1.src = newURL;
     }
   });
+
+  function clearImage() {
+    this.parentNode.style.display = "none";
+  }
+
+  function launchEditor(id, src) {
+    featherEditor.launch({
+      image: id,
+      url: src
+    });
+    return false;
+  }
+
+  function editPhoto() {
+    //console.log(this);
+    var id = this.getAttribute("id");
+    var src = this.getAttribute("src");
+    launchEditor(id, src);
+  }
+
+  function makeButton() {
+    var button = document.createElement("button");
+    button.setAttribute("style",
+      "width: 64px;"
+      + " line-height: 24px;"
+      + " background-color: #37474F;"
+      + " color: #fff;"
+      + " border: none;"
+      + " cursor: pointer;"
+      + " border-radius: 2px;"
+      + " font-size: 14px;"
+      + " position: absolute;"
+      + " text-align: center;"
+      + " top: 16px;"
+      + " right: 8px;"
+      + " padding: 0;"
+      + " z-index: 1000;"
+    );
+    button.innerHTML = "削除";
+    return button;
+  }
 
   function listener() {
 
@@ -128,54 +175,13 @@ var photoEditor = (function () {
 
   }
 
-  function clearImage() {
-    this.parentNode.style.display = "none";
-  }
-
-  function editPhoto() {
-    console.log(this);
-    var id = this.getAttribute("id");
-    var src = this.getAttribute("src");
-    launchEditor(id, src);
-  }
-
-  function launchEditor(id, src) {
-    featherEditor.launch({
-      image: id,
-      url: src
-    });
-    return false;
-  }
-
-  function makeButton() {
-    var button = document.createElement("button");
-    button.setAttribute("style",
-      "width: 64px;"
-      + " line-height: 24px;"
-      + " background-color: #37474F;"
-      + " color: #fff;"
-      + " border: none;"
-      + " cursor: pointer;"
-      + " border-radius: 2px;"
-      + " font-size: 14px;"
-      + " position: absolute;"
-      + " text-align: center;"
-      + " top: 8px;"
-      + " right: 8px;"
-      + " padding: 0;"
-      + " z-index: 1000;"
-    );
-    button.innerHTML = "削除";
-    return button;
-  }
-
   return {
     init: function () {
       listener();
     }
   };
 
-} ());
+} (window, document));
 
 dragAndDrop.init();
 photoEditor.init();
