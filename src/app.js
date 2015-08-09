@@ -9,6 +9,7 @@ var dragAndDrop = (function (window, document) {
   function makeView(data) {
 
     var div, img, customEvent;
+    var metaData = "<p>■ファイル名: <b>" + data.name + "</b><br>■容量: <b>" + data.size + "</b>バイト</p>";
 
     div = document.createElement("div");
     div.setAttribute("class", "cb-div");
@@ -20,7 +21,7 @@ var dragAndDrop = (function (window, document) {
     img.style.height = "auto";
 
     div.appendChild(img);
-    img.insertAdjacentHTML("afterend", "<p>■ファイル名: <b>" + data.name + "</b><br>■容量: <b>" + data.size + "</b>バイト</p>");
+    img.insertAdjacentHTML("afterend", metaData);
     disp.appendChild(div);
 
     customEvent = document.createEvent("HTMLEvents");
@@ -96,7 +97,7 @@ var dragAndDrop = (function (window, document) {
     }
   };
 
-} (window, document));
+})(this, this.document);
 
 var photoEditor = (function (window, document) {
 
@@ -181,7 +182,7 @@ var photoEditor = (function (window, document) {
     }
   };
 
-} (window, document));
+})(this, this.document);
 
 dragAndDrop.init();
 photoEditor.init();
